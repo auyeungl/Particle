@@ -9,13 +9,6 @@ bool Particle::almostEqual(double a, double b, double eps)
 
 
 
-
-
-
-
-
-
-/*
 void Particle::unitTests()
 {
     int score = 0;
@@ -154,4 +147,21 @@ void Particle::unitTests()
 
     cout << "Score: " << score << " / 7" << endl;
 }
-*/
+
+
+void Particle::rotate(double theta)
+{
+    RotationMatrix rotate(theta);
+    m_A* rotate;
+}
+
+void Particle::scale(double c)
+{
+    ScalingMatrix scale(c);
+    m_A* scale;
+}
+void Particle::translate(double xShift, double yShift)
+{
+    TranslationMatrix translate(xShift, yShift, m_A.getCols());
+    m_A + translate;
+}

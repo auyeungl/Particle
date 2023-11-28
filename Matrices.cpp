@@ -3,9 +3,8 @@ const double PI = 3.1415;
 namespace Matrices
 {
 
-    ///Add each corresponding element.
+    ///Add each corresponding element. This section should be self explanatory considering we already did this project.
      ///usage:  c = a + b;
-     /// 
     
     Matrix operator+(const Matrix& a, const Matrix& b)
     {
@@ -133,17 +132,20 @@ namespace Matrices
    
     RotationMatrix::RotationMatrix(double theta) : Matrix(2,2)
     { 
+        //constructs a matrix designed to rotate another 2xn matrix by theta radians
         a[0][0] = cos(theta); a[0][1] = -sin(theta);
         a[1][0] = sin(theta); a[1][1] = cos(theta);
     }
 
     ScalingMatrix::ScalingMatrix(double scale) : Matrix(2, 2)
     {
+        //constructs a matrix designed to scale another matrix by scale; a scale of 2 will double the size of another matrix
         a[0][0] = scale; a[0][1] = 0;
         a[1][0] = 0; a[1][1] = scale;
     }
     TranslationMatrix::TranslationMatrix(double xShift, double yShift, int nCols) : Matrix(2, nCols)
     {
+        //for n columns, translation matrix increases row[0] by xShift and row[1] by yShift
         for (int i = 0; i < nCols; i++)
         {
             a[0][i] = xShift;
