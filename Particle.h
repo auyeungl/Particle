@@ -16,7 +16,7 @@ public:
 	virtual void draw(RenderTarget& target, RenderStates states) const override;
     void update(float dt);
     float getTTL() { return m_ttl; }
-
+    Vector2f mapPixelToCoords(Vector2i mousePixel, RenderTarget& target);
     //Functions for unit testing
     bool almostEqual(double a, double b, double eps = 0.0001);
     void unitTests();
@@ -32,16 +32,17 @@ private:
     Color m_color1;
     Color m_color2;
     Matrix m_A;
+    float m_aspectRatio;
 
     ///rotate Particle by theta radians counter-clockwise
     ///construct a RotationMatrix R, left mulitply it to m_A
-    void rotate(double theta);
+    void rotate(double theta); // complete
 
     ///Scale the size of the Particle by factor c
     ///construct a ScalingMatrix S, left multiply it to m_A
-    void scale(double c);
+    void scale(double c); // complete
 
     ///shift the Particle by (xShift, yShift) coordinates
     ///construct a TranslationMatrix T, add it to m_A
-    void translate(double xShift, double yShift);
+    void translate(double xShift, double yShift); // complete
 };

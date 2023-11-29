@@ -160,8 +160,30 @@ void Particle::scale(double c)
     ScalingMatrix scale(c);
     m_A* scale;
 }
+
 void Particle::translate(double xShift, double yShift)
 {
     TranslationMatrix translate(xShift, yShift, m_A.getCols());
     m_A + translate;
+}
+
+Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosition) :m_A(2, numPoints)
+{
+    m_ttl = TTL;
+    m_numPoints = numPoints;
+    m_radiansPerSec = (float)rand() / (RAND_MAX) * M_PI;
+    m_cartesianPlane.setCenter(0, 0);
+    m_cartesianPlane.setSize(target.getSize().x, (-1.) * target.getSize().y);
+    
+    m_centerCoordinate = mapPixelToCoords(mouseClickPosition, target);
+
+}
+
+Vector2f Particle::mapPixelToCoords(Vector2i mousePixel, RenderTarget& target)
+{
+    m_aspectRatio = (double)target.getSize().y / target.getSize().x;
+    float planeX = m_cartesianPlane.getCenter().x + (mousePixel.x - target.getSize().x / 2.0) / (target.getSize().x / 2.0) * (m_cartesianPlane.getSize().x);
+    float planeY = m_cartesianPlane.getCenter().y - (mousePixel.y - target.getSize().y / 2.0) / (target.getSize().y / 2.0) * (m_cartesianPlane.getSize().y) * m_aspectRatio;
+    return Vector2f(planeX, planeY);
+
 }
