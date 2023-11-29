@@ -175,15 +175,8 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
     m_cartesianPlane.setCenter(0, 0);
     m_cartesianPlane.setSize(target.getSize().x, (-1.) * target.getSize().y);
     
-    m_centerCoordinate = mapPixelToCoords(mouseClickPosition, target);
+    m_centerCoordinate = target.mapPixelToCoords( mouseClickPosition, m_cartesianPlane);
 
 }
 
-Vector2f Particle::mapPixelToCoords(Vector2i mousePixel, RenderTarget& target)
-{
-    m_aspectRatio = (double)target.getSize().y / target.getSize().x;
-    float planeX = m_cartesianPlane.getCenter().x + (mousePixel.x - target.getSize().x / 2.0) / (target.getSize().x / 2.0) * (m_cartesianPlane.getSize().x);
-    float planeY = m_cartesianPlane.getCenter().y - (mousePixel.y - target.getSize().y / 2.0) / (target.getSize().y / 2.0) * (m_cartesianPlane.getSize().y) * m_aspectRatio;
-    return Vector2f(planeX, planeY);
 
-}

@@ -16,7 +16,6 @@ public:
 	virtual void draw(RenderTarget& target, RenderStates states) const override;
     void update(float dt);
     float getTTL() { return m_ttl; }
-    Vector2f mapPixelToCoords(Vector2i mousePixel, RenderTarget& target);
     //Functions for unit testing
     bool almostEqual(double a, double b, double eps = 0.0001);
     void unitTests();
