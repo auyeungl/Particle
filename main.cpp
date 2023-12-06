@@ -4,7 +4,7 @@
 const double PI = 3.1415;
 
 using namespace std;
-//using namespace sf;
+using namespace sf;
 using namespace Matrices;
 
 int main()
@@ -15,34 +15,10 @@ int main()
 	VideoMode vm(pixelWidth, pixelHeight);
 	// Create and open a window for the game
 	RenderWindow window(vm, "Particle", Style::Default);
-
-	while (window.isOpen())
-	{
-
-		/*
-		****************************************
-		Handle the players input
-		****************************************
-		*/
-
-		
-
-		/*
-		****************************************
-		Update the scene
-		****************************************
-		*/
+	Engine engineTest;
+	engineTest.run();
 
 
-		/*
-		****************************************
-		Draw the scene
-		****************************************
-		*/
-
-		window.clear();
-		window.display();
-	}
 	return 0;
 }
 

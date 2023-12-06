@@ -152,19 +152,19 @@ void Particle::unitTests()
 void Particle::rotate(double theta)
 {
     RotationMatrix rotate(theta);
-    m_A* rotate;
+    m_A = rotate* m_A;
 }
 
 void Particle::scale(double c)
 {
     ScalingMatrix scale(c);
-    m_A* scale;
+    m_A = scale*m_A;
 }
 
 void Particle::translate(double xShift, double yShift)
 {
     TranslationMatrix translate(xShift, yShift, m_A.getCols());
-    m_A + translate;
+    m_A = m_A + translate;
 }
 
 Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosition) :m_A(2, numPoints)
@@ -173,10 +173,63 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
     m_numPoints = numPoints;
     m_radiansPerSec = (float)rand() / (RAND_MAX) * M_PI;
     m_cartesianPlane.setCenter(0, 0);
-    m_cartesianPlane.setSize(target.getSize().x, (-1.) * target.getSize().y);
+    m_cartesianPlane.setSize(target.getSize().x, (-1.0) * target.getSize().y);
     
     m_centerCoordinate = target.mapPixelToCoords( mouseClickPosition, m_cartesianPlane);
+    cout << m_centerCoordinate.x << " " << m_centerCoordinate.y << endl;
+    m_vx = ((rand() % 400) + 100);
+    if (rand() % 2)
+    {
+        m_vx = m_vx * -1;
+    }
+    m_vy = ((rand() % 200) + 50);
+    m_color1 = Color::Red;
+    m_color2 = Color::Blue;
+    float theta = ((float)rand() / (RAND_MAX)) * (M_PI);
+    float dTheta = 2 * M_PI / (numPoints - 1);
+    for (int i = 0; i < numPoints; i++)
+    {
+        float r, dx, dy;
+        r = (rand() % 60) + 20;
+        dx = r * cos(theta);
+        dy = r * sin(theta);
+        m_A(0, i) = m_centerCoordinate.x +dx ;
+        m_A(1, i) = m_centerCoordinate.y + dy;
+        theta += dTheta;
+
+    }
+
 
 }
+
+ void Particle::draw(RenderTarget& target, RenderStates states) const 
+{
+     VertexArray lines(TriangleFan, m_numPoints+1);
+     Vector2f center;
+     center = Vector2f(target.mapCoordsToPixel(m_centerCoordinate, m_cartesianPlane));
+     lines[0].position = center;
+     lines[0].color = m_color1;
+     for (int i = 1; i <= m_numPoints; i++)
+     {
+         lines[i].position = Vector2f(target.mapCoordsToPixel(Vector2f(m_A(0, i-1), m_A(1, i-1)), m_cartesianPlane));
+         lines[i].color = m_color2;
+     }
+     target.draw(lines);
+
+
+
+}
+ void Particle::update(float dt)
+ {
+     m_ttl -= dt;
+     rotate(dt * m_radiansPerSec);
+     scale(SCALE);
+     float dy, dx;
+     dx = m_vx * dt;
+     m_vy -= G * dt;
+     dy = m_vy * dt;
+     translate(dx, dy);
+
+ }
 
 

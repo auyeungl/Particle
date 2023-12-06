@@ -14,6 +14,11 @@ void Engine::input()
 				std::cout << "the left button was pressed" << std::endl;
 				std::cout << "mouse x: " << event.mouseButton.x << std::endl;
 				std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+				for (int i = 0; i < 5; i++)
+				{
+					Particle* particlePtr = new Particle(m_Window, rand()%25 + 25, Vector2i(event.mouseButton.x, event.mouseButton.y));
+					m_particles.push_back(*particlePtr);
+				}
 
 			}
 		}
@@ -27,11 +32,29 @@ void Engine::input()
 
 void Engine::update(float dtAsSeconds)
 {
+	for (int i = 0, size = m_particles.size(); i <size;)
+	{
+		if (m_particles[i].getTTL() > 0)
+		{
+			m_particles[i].update(dtAsSeconds);
+			i++;
+		}
+		else
+		{
+			m_particles.erase(m_particles.begin()+i);
+			size--;
+		}
+	}
 
 }
 void Engine::draw()
 {
-
+	m_Window.clear();
+	for (int i = 0; i < m_particles.size(); i++)
+	{
+		m_Window.draw(m_particles[i]);
+	}
+	m_Window.display();
 }
 
 // The Engine constructor
@@ -44,6 +67,17 @@ Engine::Engine()
 // Run will call all the private functions
 void Engine::run()
 {
-	Clock clock();
+	Clock clockThing;
+	
+	Particle p(m_Window, 4, { (int)m_Window.getSize().x / 2, (int)m_Window.getSize().y / 2 });
+	
+	cout << "Unit tests complete.  Starting engine..." << endl;
+	while (m_Window.isOpen())
+	{
+		double secondsPassed = (clockThing.restart()).asSeconds();
+		this->input();
+		this->update(secondsPassed);
+		this->draw();
+	}
 	
 }
