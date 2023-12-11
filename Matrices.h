@@ -1,7 +1,10 @@
 #ifndef MATRIX_H_INCLUDED
 #define MATRIX_H_INCLUDED
 
-
+#include <cmath>
+#ifdef M_PI
+#undef M_PI
+#endif
 #include <iostream>
 #include <vector>
 #include <iomanip>
