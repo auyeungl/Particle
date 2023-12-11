@@ -151,20 +151,31 @@ void Particle::unitTests()
 
 void Particle::rotate(double theta)
 {
+    Vector2f temp = m_centerCoordinate;
+    translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
     RotationMatrix rotate(theta);
+
     m_A = rotate* m_A;
+    translate(temp.x, temp.y);
 }
 
 void Particle::scale(double c)
 {
+    Vector2f temp = m_centerCoordinate;
+    translate(-m_centerCoordinate.x, -m_centerCoordinate.y);
+
     ScalingMatrix scale(c);
     m_A = scale*m_A;
+    translate(temp.x, temp.y);
+
 }
 
 void Particle::translate(double xShift, double yShift)
 {
     TranslationMatrix translate(xShift, yShift, m_A.getCols());
     m_A = m_A + translate;
+    m_centerCoordinate.x += xShift;
+    m_centerCoordinate.y += yShift;
 }
 
 Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosition) :m_A(2, numPoints)
@@ -172,20 +183,30 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
     m_ttl = TTL;
     m_numPoints = numPoints;
     m_radiansPerSec = (float)rand() / (RAND_MAX) * M_PI;
-    m_cartesianPlane.setCenter(0, 0);
+    m_cartesianPlane.setCenter(0,0);
     m_cartesianPlane.setSize(target.getSize().x, (-1.0) * target.getSize().y);
     
-    m_centerCoordinate = target.mapPixelToCoords( mouseClickPosition, m_cartesianPlane);
-    cout << m_centerCoordinate.x << " " << m_centerCoordinate.y << endl;
+    m_centerCoordinate = target.mapPixelToCoords(mouseClickPosition, m_cartesianPlane);
     m_vx = ((rand() % 400) + 100);
     if (rand() % 2)
     {
         m_vx = m_vx * -1;
     }
-    m_vy = ((rand() % 200) + 50);
-    m_color1 = Color::Red;
-    m_color2 = Color::Blue;
-    float theta = ((float)rand() / (RAND_MAX)) * (M_PI);
+    m_vy = ((rand() % 400) + 100);
+    int color1rand, color2rand;
+    color1rand = rand() % 120;
+    color2rand = rand() % 120;
+    color2rand = 255 - color2rand;
+
+    m_color1.r = color1rand;
+    m_color1.g = 255 - color1rand;
+    m_color1.b = abs(255 - color1rand * 2);
+
+    m_color2.r = color2rand;
+    m_color2.g = 255 - color2rand;
+    m_color2.b = abs(255 - color2rand * 2);
+
+    float theta = ((float)rand() / (RAND_MAX)) * (M_PI)/2;
     float dTheta = 2 * M_PI / (numPoints - 1);
     for (int i = 0; i < numPoints; i++)
     {
@@ -193,9 +214,9 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
         r = (rand() % 60) + 20;
         dx = r * cos(theta);
         dy = r * sin(theta);
-        m_A(0, i) = m_centerCoordinate.x +dx ;
+        m_A(0, i) = m_centerCoordinate.x + dx;
         m_A(1, i) = m_centerCoordinate.y + dy;
-        theta += dTheta;
+        theta = theta + dTheta;
 
     }
 
@@ -211,7 +232,7 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
      lines[0].color = m_color1;
      for (int i = 1; i <= m_numPoints; i++)
      {
-         lines[i].position = Vector2f(target.mapCoordsToPixel(Vector2f(m_A(0, i-1), m_A(1, i-1)), m_cartesianPlane));
+         lines[i].position = Vector2f(target.mapCoordsToPixel(     Vector2f(       m_A(0, i-1), m_A(1, i-1)      )        , m_cartesianPlane));
          lines[i].color = m_color2;
      }
      target.draw(lines);
@@ -226,9 +247,13 @@ Particle::Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosit
      scale(SCALE);
      float dy, dx;
      dx = m_vx * dt;
+
      m_vy -= G * dt;
      dy = m_vy * dt;
      translate(dx, dy);
+
+
+
 
  }
 
