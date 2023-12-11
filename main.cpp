@@ -1,7 +1,6 @@
 #include "Engine.h"
 #include "Matrices.h"
 #include "Particle.h"
-const double PI = 3.1415;
 
 using namespace std;
 using namespace sf;
